@@ -12,6 +12,7 @@ export const questions = (state = initialState, action) => {
         questions: action.payload.questions,
         status: 'done',
       };
+    case ActionTypes.GET_ANSWERS_ERROR:
     case ActionTypes.ANSWER_QUESTION_ERROR:
     case ActionTypes.CREATE_QUESTION_ERROR:
     case ActionTypes.GET_ALL_QUESTIONS_ERROR:
@@ -20,10 +21,13 @@ export const questions = (state = initialState, action) => {
         status: 'error',
         error: action.payload.error,
       };
-    // answer questions logic
+    case ActionTypes.GET_ANSWERS_SUCCESS:
     case ActionTypes.ANSWER_QUESTION_SUCCESS: {
       const newQuestions = state.questions.map(q => q.id === action.payload.id ? action.payload : q);
       return {questions: newQuestions, status: 'done'};
+    }
+    case ActionTypes.ANSWER_QUESTION: {
+      return {...state, status: {answering: action.payload.question.id}};
     }
     case ActionTypes.CREATE_QUESTION_SUCCESS: {
       const newQuestions = [...state.questions, action.payload];

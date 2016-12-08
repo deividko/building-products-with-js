@@ -48,6 +48,11 @@ export const getAllQuestions = () => ({
   type: ActionTypes.GET_ALL_QUESTIONS,
 });
 
+export const getAnswers = questionId => ({
+  type: ActionTypes.GET_ANSWERS,
+  payload: {questionId},
+});
+
 export const answerQuestion = payload => ({
   type: ActionTypes.ANSWER_QUESTION,
   payload,

@@ -25,11 +25,34 @@ export const getAllQuestions = action$ => action$
     )),
   );
 
+  export const getAnswers = action$ => action$
+    .ofType(ActionTypes.GET_ANSWERS)
+    .map(signRequest)
+    .mergeMap(({headers, payload}) => Observable
+      .ajax.get(`http://localhost:8080/api/question/${payload.questionId}`, headers)
+      .delay(2000) // TODO remove: it is a simple test for show the spinner while loading
+      .map(res => res.response)
+      .map(question => ({
+        type: ActionTypes.GET_ANSWERS_SUCCESS,
+        payload: question,
+      }))
+      .catch(error => Observable.of(
+        {
+          type: ActionTypes.GET_ANSWERS_ERROR,
+          payload: {error},
+        },
+        Actions.addNotificationAction(
+          {text: `[get answers] Error: ${ajaxErrorToMessage(error)}`, alertType: 'danger'},
+        ),
+      )),
+    );
+
 export const answerQuestion = action$ => action$
   .ofType(ActionTypes.ANSWER_QUESTION)
   .map(signRequest)
   .switchMap(({headers, payload}) => Observable
     .ajax.post(`http://localhost:8080/api/question/${payload.question.id}/answer`, {answer: payload.answer}, headers)
+    .delay(2000) // TODO remove: it is a simple test for show the spinner while loading
     .map(res => res.response)
     .mergeMap(question => Observable.of(
       {

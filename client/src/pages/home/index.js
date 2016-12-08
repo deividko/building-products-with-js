@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import MediaQuery from 'react-responsive';
 
 // our packages
-import {getAllQuestions, answerQuestion} from '../../store/actions';
+import {getAllQuestions} from '../../store/actions';
 import {QuestionList, QuestionSingle} from '../../components/question';
 import {Spinner} from '../../components/spinner';
 
@@ -15,7 +15,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   fetchQuestions: () => dispatch(getAllQuestions()),
-  doAnswer: payload => dispatch(answerQuestion(payload)),
 });
 
 
@@ -34,9 +33,9 @@ class Home extends Component {
         <MediaQuery query="(min-width: 992px)">
           {(matches) => {
             if (matches) {
-              return <QuestionList questions={questions} doAnswer={doAnswer} />;
+              return <QuestionList questions={questions} />;
             } else {
-              return <QuestionSingle questions={questions} doAnswer={doAnswer} />;
+              return <QuestionSingle questions={questions} />;
             }
           }}
         </MediaQuery>

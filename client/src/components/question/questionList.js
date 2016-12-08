@@ -2,10 +2,10 @@ import React from 'react';
 
 import Question from './question';
 
-const QuestionList = ({questions, doAnswer}) => (
+const QuestionList = ({questions}) => (
   <div>
     {questions.map(question => (
-      <Question key={question.id} question={question} doAnswer={doAnswer} />
+      <Question key={question.id} question={question} />
     ))}
   </div>
 );
