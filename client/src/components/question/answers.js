@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 
-import {getAnswers} from '../../store/actions';
+import {getAnswers, addObservable, removeObservable} from '../../store/actions';
+import {registerQuestionObservable} from '../../store/realtime';
 import {Spinner} from '../../components/spinner';
 
 const mapStateToProps = (state, {question}) => ({
@@ -11,20 +12,21 @@ const mapStateToProps = (state, {question}) => ({
 
 const mapDispatchToProps = dispatch => ({
   getAnswers: questionId => dispatch(getAnswers(questionId)),
+  addObservable: observable => dispatch(addObservable(observable)),
+  removeObservable: observable => dispatch(removeObservable(observable)),
 });
 
 class Answers extends Component {
 
   constructor(props) {
     super(props);
+    const {question, getAnswers, addObservable, loading} = this.props;
+    getAnswers(question.id);
+    const {payload: observable} = addObservable(registerQuestionObservable(question.id));
     this.state = {
-      loading: this.props.loading,
+      loading,
+      observable,
     };
-  }
-
-  componentWillMount() {
-    const {question} = this.props;
-    this.props.getAnswers(question.id);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -32,6 +34,13 @@ class Answers extends Component {
       this.setState({loading: false});
     }
   }
+
+  componentWillUnmount() {
+    const {removeObservable} = this.props;
+    const {observable} = this.state;
+    removeObservable(observable);
+  }
+
 
   render() {
     const {question, answering} = this.props;
