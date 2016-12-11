@@ -55,6 +55,10 @@ const jwtOpts = {
   secretOrKey: authConfig.jwtSecret,
 };
 passport.use(new JwtStrategy(jwtOpts, async (payload, done) => {
+  // skip database validation for OAuth users
+  if (payload.provider) {
+    return done(null, payload); // TODO validate accessToken against provider
+  }
   let user;
   try {
     user = await User.get(payload.id)

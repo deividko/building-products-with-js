@@ -27,15 +27,17 @@ export default (app) => {
     (req, res) => {
       if (req.user) {
         const githubUser = req.user.profile;
+
         const user = {
-          id: githubUser.id,
+          id: `${githubUser.provider}-${githubUser.id}`,
           login: githubUser.username,
-          registrationDate: githubUser._json.created_at,
+          registrationDate: githubUser._json.created_at, // eslint-disable-line no-underscore-dangle
           provider: githubUser.provider,
           accessToken: req.user.accessToken,
         };
+
         const token = jwt.sign(user, authConfig.jwtSecret);
-        res.send({user, token});
+        res.redirect(`http://localhost:3000/dist/redirecting.html#token=${token}&user=${JSON.stringify(user)}`);
       } else {
         res.status(401).send({error: 'Error logging in!'});
       }
