@@ -50,7 +50,7 @@ export const getAllQuestions = action$ => action$
 export const answerQuestion = action$ => action$
   .ofType(ActionTypes.ANSWER_QUESTION)
   .map(signRequest)
-  .switchMap(({headers, payload}) => Observable
+  .mergeMap(({headers, payload}) => Observable
     .ajax.post(`http://localhost:8080/api/question/${payload.question.id}/answer`, {answer: payload.answer}, headers)
     .delay(2000) // TODO remove: it is a simple test for show the spinner while loading
     .map(res => res.response)

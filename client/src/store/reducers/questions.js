@@ -1,6 +1,6 @@
 import * as ActionTypes from '../actionTypes';
 
-const initialState = {questions: [], status: 'inited'};
+const initialState = {questions: [], status: 'inited', answering: {}};
 
 export const questions = (state = initialState, action) => {
   switch (action.type) {
@@ -9,6 +9,7 @@ export const questions = (state = initialState, action) => {
       return {...state, status: 'loading', error: null};
     case ActionTypes.GET_ALL_QUESTIONS_SUCCESS:
       return {
+        ...state,
         questions: action.payload.questions,
         status: 'done',
       };
@@ -24,14 +25,23 @@ export const questions = (state = initialState, action) => {
     case ActionTypes.GET_ANSWERS_SUCCESS:
     case ActionTypes.ANSWER_QUESTION_SUCCESS: {
       const newQuestions = state.questions.map(q => q.id === action.payload.id ? action.payload : q);
-      return {questions: newQuestions, status: 'done'};
+      return {
+        ...state,
+        questions: newQuestions,
+        status: 'done',
+        answering: action.type === ActionTypes.GET_ANSWERS_SUCCESS ? state.answering : {
+          ...state.answering,
+          [action.payload.id]: false,
+        },
+      };
     }
     case ActionTypes.ANSWER_QUESTION: {
-      return {...state, status: {answering: action.payload.question.id}};
+      const answering = {...state.answering, [action.payload.question.id]: true};
+      return {...state, answering};
     }
     case ActionTypes.CREATE_QUESTION_SUCCESS: {
       const newQuestions = [...state.questions, action.payload];
-      return {questions: newQuestions, status: 'done'};
+      return {...state, questions: newQuestions, status: 'done'};
     }
     default:
       return state;

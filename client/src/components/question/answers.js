@@ -5,7 +5,8 @@ import {getAnswers} from '../../store/actions';
 import {Spinner} from '../../components/spinner';
 
 const mapStateToProps = (state, {question}) => ({
-  answering: state.questions.status && state.questions.status.answering === question.id,
+  answering: state.questions.answering &&
+             state.questions.answering[question.id],
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -27,7 +28,9 @@ class Answers extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({loading: false});
+    if (this.props.question !== nextProps.question && nextProps.question.answers) {
+      this.setState({loading: false});
+    }
   }
 
   render() {
