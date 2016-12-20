@@ -44,8 +44,9 @@ export const removeNotificationAction = notificationId => ({
   payload: {notificationId},
 });
 
-export const getAllQuestions = () => ({
-  type: ActionTypes.GET_ALL_QUESTIONS,
+export const getMoreQuestions = payload => ({
+  type: ActionTypes.GET_MORE_QUESTIONS,
+  payload,
 });
 
 export const getAnswers = questionId => ({

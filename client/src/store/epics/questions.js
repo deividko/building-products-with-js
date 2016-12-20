@@ -3,49 +3,50 @@ import * as ActionTypes from '../actionTypes';
 import * as Actions from '../actions';
 import {signRequest, ajaxErrorToMessage} from '../../util';
 
-export const getAllQuestions = action$ => action$
-  .ofType(ActionTypes.GET_ALL_QUESTIONS)
+export const getMoreQuestions = action$ => action$
+  .ofType(ActionTypes.GET_MORE_QUESTIONS)
   .map(signRequest)
-  .switchMap(({headers}) => Observable
-    .ajax.get('http://localhost:8080/api/question', headers)
+  .mergeMap(({headers, payload}) => Observable
+    .ajax.get(`http://localhost:8080/api/question?skip=${payload.skip || 0}&limit=${payload.limit || 10}`, headers)
     .delay(2000) // TODO remove: it is a simple test for show the spinner while loading
     .map(res => res.response)
     .map(questions => ({
-      type: ActionTypes.GET_ALL_QUESTIONS_SUCCESS,
+      type: ActionTypes.GET_MORE_QUESTIONS_SUCCESS,
       payload: {questions},
     }))
     .catch(error => Observable.of(
       {
-        type: ActionTypes.GET_ALL_QUESTIONS_ERROR,
+        type: ActionTypes.GET_MORE_QUESTIONS_ERROR,
         payload: {error},
       },
       Actions.addNotificationAction(
-        {text: `[get all questions] Error: ${ajaxErrorToMessage(error)}`, alertType: 'danger'},
+        {text: `[get more questions] Error: ${ajaxErrorToMessage(error)}`, alertType: 'danger'},
       ),
     )),
   );
 
-  export const getAnswers = action$ => action$
-    .ofType(ActionTypes.GET_ANSWERS)
-    .map(signRequest)
-    .mergeMap(({headers, payload}) => Observable
-      .ajax.get(`http://localhost:8080/api/question/${payload.questionId}`, headers)
-      .delay(2000) // TODO remove: it is a simple test for show the spinner while loading
-      .map(res => res.response)
-      .map(question => ({
-        type: ActionTypes.GET_ANSWERS_SUCCESS,
-        payload: question,
-      }))
-      .catch(error => Observable.of(
-        {
-          type: ActionTypes.GET_ANSWERS_ERROR,
-          payload: {error},
-        },
-        Actions.addNotificationAction(
-          {text: `[get answers] Error: ${ajaxErrorToMessage(error)}`, alertType: 'danger'},
-        ),
-      )),
-    );
+
+export const getAnswers = action$ => action$
+  .ofType(ActionTypes.GET_ANSWERS)
+  .map(signRequest)
+  .mergeMap(({headers, payload}) => Observable
+    .ajax.get(`http://localhost:8080/api/question/${payload.questionId}`, headers)
+    .delay(2000) // TODO remove: it is a simple test for show the spinner while loading
+    .map(res => res.response)
+    .map(question => ({
+      type: ActionTypes.GET_ANSWERS_SUCCESS,
+      payload: question,
+    }))
+    .catch(error => Observable.of(
+      {
+        type: ActionTypes.GET_ANSWERS_ERROR,
+        payload: {error},
+      },
+      Actions.addNotificationAction(
+        {text: `[get answers] Error: ${ajaxErrorToMessage(error)}`, alertType: 'danger'},
+      ),
+    )),
+  );
 
 export const answerQuestion = action$ => action$
   .ofType(ActionTypes.ANSWER_QUESTION)
