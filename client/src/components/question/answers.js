@@ -13,7 +13,7 @@ const mapStateToProps = (state, {question}) => ({
 const mapDispatchToProps = dispatch => ({
   getAnswers: questionId => dispatch(getAnswers(questionId)),
   addObservable: observable => dispatch(addObservable(observable)),
-  removeObservable: observable => dispatch(removeObservable(observable)),
+  removeObservable: (observable, question) => dispatch(removeObservable({observable, question})),
 });
 
 class Answers extends Component {
@@ -36,9 +36,9 @@ class Answers extends Component {
   }
 
   componentWillUnmount() {
-    const {removeObservable} = this.props;
+    const {removeObservable, question} = this.props;
     const {observable} = this.state;
-    removeObservable(observable);
+    removeObservable(observable, question);
   }
 
 
