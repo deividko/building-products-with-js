@@ -1,3 +1,7 @@
+# Demo
+
+[Demo](http://bpwjs-client-experts.44fs.preview.openshiftapps.com/)
+
 # Building products with javascript
 
 > Free open-source course
